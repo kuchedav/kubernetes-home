@@ -20,3 +20,7 @@ Create Persistant volumne
   https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
   minikube ssh
   -> create your folder path
+minikube
+  Set minikube harware configuration
+    $ minikube config set cpus N
+    $ minikube config set memory N

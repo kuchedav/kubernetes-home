@@ -131,3 +131,7 @@ dmypy.json
 # my own files
 youtube-tutorial-series
 .vscode
+
+# ignore certificates
+*.crt
+*.key
