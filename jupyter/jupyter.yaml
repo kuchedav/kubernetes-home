@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jupyter
+  labels:
+    app: jupyter-david
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jupyter
+  template:
+    metadata:
+      labels:
+        app: jupyter
+    spec:
+      volumes:
+      - name: jupyter-volume-claim
+        persistentVolumeClaim:
+          claimName: jupyter-volume-claim
+      containers:
+      - name: jupyter
+        image: kuchedav/jupyter:v1.4.3
+        ports:
+        - containerPort: 1111
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1"
+          limits:
+            memory: "2Gi"
+            cpu: "2"
+        volumeMounts:
+        - mountPath: "/home/david"
+          name: jupyter-volume-claim
+---
+# kubectl get service
+# kubectl describe service mongodb-deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupyter-service
+spec:
+  selector:
+    app: jupyter
+  type: ClusterIP
+    # LoadBalancer = direct access to service from outside
+    # ClusterIP = Access over Ingress controller to service (Internal, use internal port!)
+  ports:
+  - protocol: TCP
+    port: 1111
+    targetPort: 1111
+    # nodePort: 30000 # Add nodeport, when type=LoadBalancer
