@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../docker/dagster"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../docker"
+		}
+	],
+	"settings": {}
+}

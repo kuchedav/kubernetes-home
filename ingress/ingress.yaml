@@ -6,6 +6,8 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  # Manual on how to get a https secure ingress controller:
+  # https://medium.com/avmconsulting-blog/how-to-secure-applications-on-kubernetes-ssl-tls-certificates-8f7f5751d788
   tls:
   - hosts:
     - david-home.com
