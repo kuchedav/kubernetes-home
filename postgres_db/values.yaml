@@ -1,0 +1,6 @@
+postgresqlUsername: david_postgresdb
+postgresqlPassword: 
+  secretKeyRef:
+    name: postgres-password
+    key: postgresql-password
+postgresqlDatabase: david_postgresdb
