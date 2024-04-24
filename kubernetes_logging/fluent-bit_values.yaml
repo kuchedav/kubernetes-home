@@ -1,9 +1,0 @@
-backend:
-  type: es
-  es:
-    host: "elasticsearch-master"
-    port: 9200
-    logstash_prefix: "logstash"
-    logstash_format: true
-    replace_dots: false
-    time_key: "@timestamp"

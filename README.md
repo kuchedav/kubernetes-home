@@ -11,3 +11,7 @@ minikube start
 minikube addons enable ingress
 minikube tunnel
 ````
+
+## Naming convention
+
+Folders which start with _* are not production ready and still experimental
