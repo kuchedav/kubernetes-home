@@ -27,7 +27,19 @@ new_user = quote(crd['usr'])
 new_password = quote(crd['pwd'])
 
 # Execute the CREATE USER command
-cur.execute(f"CREATE USER {new_user} WITH PASSWORD '{new_password}';")
+try:
+    cur.execute(f"CREATE USER {new_user} WITH PASSWORD '{new_password}';")
+    conn.commit()
+    print(f"User {new_user} created.")
+except:
+    print(f"User {new_user} already exists.")
+
+try:
+    cur.execute("GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sepia TO PUBLIC;")
+    conn.commit()
+    print("Permissions granted.")
+except:
+    print("Permissions already granted.")
 
 # Close the cursor and the connection
 cur.close()
