@@ -8,7 +8,7 @@ pg_create_secret:
 	kubectl create secret generic david-postgresdb --from-literal=david-postgresdb=<PWD>
 
 pg_export_password:
-	-export POSTGRES_PASSWORD=$(kubectl get secret --namespace default \
+	export POSTGRES_PASSWORD=$(kubectl get secret --namespace default \
 		david-postgres-postgresql -o jsonpath="{.data.postgres-password}" | base64 -d)
 
 # create the david_postgres user
@@ -64,3 +64,39 @@ debug_stop:
 	kubectl delete -f ./debug/debug-pod.yaml
 
 ########################################################################################
+# PROMETHEUS                                                                           #
+########################################################################################
+
+# Example queries for Prometheus
+# > kube_pod_info
+# > sum(container_memory_usage_bytes{pod="fastapi-kubernetes-6bf6f75b46-qlz2v"})
+
+# Install the metrics server
+prometheus_install_metrics_server:
+	kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+prometheus_install: prometheus_install_metrics_server
+	helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+	helm repo update
+	helm upgrade --install prometheus prometheus-community/prometheus --set-file serverFiles.prometheus.yml=./prometheus_grafana/scrape_config.yaml
+
+prometheus_uninstall:
+	helm uninstall prometheus
+
+# Get the Prometheus server URL by running these commands in the same shell
+prometheus_activate_outside_connections:
+	kubectl --namespace default port-forward $(shell kubectl get pods --namespace default -l "app.kubernetes.io/name=prometheus,app.kubernetes.io/instance=prometheus" -o jsonpath="{.items[0].metadata.name}") 9090
+
+grafana_install:
+	helm repo add grafana https://grafana.github.io/helm-charts 
+	helm repo update
+	helm install grafana grafana/grafana
+
+grafana_uninstall:
+	helm uninstall grafana
+
+grafana_get_admin_password:
+	kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+
+grafana_activate_outside_connections:
+	kubectl --namespace default port-forward $(shell kubectl get pods --namespace default -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=grafana" -o jsonpath="{.items[0].metadata.name}") 3000
